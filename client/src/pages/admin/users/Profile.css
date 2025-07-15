@@ -1,0 +1,81 @@
+.profile-container {
+  max-width: 800px;
+  margin: 50px auto;
+  padding: 30px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 0 15px rgba(0, 0, 0, 0.08);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.profile-container h2 {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 15px;
+}
+
+.profile-container label {
+  display: block;
+  font-weight: 500;
+  margin-bottom: 6px;
+  text-align: left;
+  color: #444;
+}
+
+.profile-container .form-control,
+.profile-container select {
+  width: 100%;
+  padding: 10px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: 1px solid #ccc;
+  margin-bottom: 20px;
+}
+
+.profile-container .btn {
+  padding: 10px 24px;
+  font-size: 1rem;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.profile-container .btn-success {
+  background-color: #28a745;
+  color: #fff;
+  margin-top: 10px;
+}
+
+.profile-container .btn-success:hover {
+  background-color: #218838;
+}
+
+.profile-container .btn-secondary {
+  background-color: #6c757d;
+  color: #fff;
+}
+
+.profile-container .btn-danger {
+  background-color: #dc3545;
+  color: #fff;
+}
+
+.profile-container .button-group {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-top: 30px;
+}
+
+.profile-container .map-container {
+  margin-top: 10px;
+  height: 300px;
+  border-radius: 10px;
+  overflow: hidden;
+  border: 1px solid #ddd;
+}
+
+.profile-container .text-muted {
+  font-style: italic;
+  color: #888;
+}

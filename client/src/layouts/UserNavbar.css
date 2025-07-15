@@ -1,0 +1,174 @@
+/* Overall Navbar Styling */
+.modern-navbar {
+  background-color: #111111; /* Deep black */
+  padding: 1rem 0;
+  position: sticky;
+  top: 0;
+  z-index: 1020;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Logo and Brand Name */
+.navbar-brand {
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 1.5rem;
+  display: flex;
+  align-items: center;
+}
+
+.navbar-brand:hover {
+  color: #f0f0f0;
+}
+
+.logo-img {
+  border-radius: 8px;
+}
+
+/* Navigation Links */
+.nav-link {
+  color: #ffffff !important;
+  font-weight: 500;
+  margin: 0 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  transition: background-color 0.3s ease;
+}
+
+.nav-link:hover,
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Dropdown Menu */
+.dropdown-menu {
+  background-color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem;
+}
+
+.dropdown-item {
+  color: #222222;
+  padding: 0.75rem 1.25rem;
+  transition: background-color 0.2s ease;
+}
+
+.dropdown-item:hover {
+  background-color: #f4f4f4;
+  color: #111111;
+}
+
+/* Submenu */
+.dropdown-submenu .dropdown-menu {
+  left: 100%;
+  top: -8px;
+  margin-left: 0.1rem;
+}
+
+.dropdown-submenu .arrow {
+  font-size: 12px;
+  opacity: 0.7;
+}
+
+/* Search Bar */
+.search-container {
+  width: 40%;
+  max-width: 500px;
+}
+
+.modern-search-input {
+  border-radius: 2rem;
+  border: none;
+  padding: 0.5rem 1rem;
+  padding-right: 3rem; /* Space for icon */
+  font-size: 0.9rem;
+}
+
+.modern-search-input:focus {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.25);
+  outline: none;
+}
+
+.search-btn {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  color: #6c757d;
+  cursor: pointer;
+}
+
+/* Right-side icons and buttons */
+.nav-icons .nav-link,
+.nav-icons .btn {
+  color: #ffffff;
+  margin-left: 0.5rem;
+}
+
+.cart-link {
+  position: relative;
+  font-size: 1.25rem;
+}
+
+.cart-link .badge {
+  position: absolute;
+  top: -5px;
+  right: -10px;
+  font-size: 0.7rem;
+  padding: 0.3em 0.5em;
+}
+
+.btn-profile,
+.btn-logout,
+.btn-login {
+  border-color: rgba(255, 255, 255, 0.75);
+  font-weight: 500;
+}
+
+.btn-profile:hover,
+.btn-logout:hover,
+.btn-login:hover {
+  background-color: #ffffff;
+  color: #1a73e8;
+}
+
+/* Mobile Menu Toggle */
+.navbar-toggler {
+  border: none;
+  color: #ffffff;
+  font-size: 1.5rem;
+}
+
+.navbar-toggler:focus {
+  box-shadow: none;
+}
+
+/* Responsive adjustments */
+@media (max-width: 991.98px) {
+  .search-container {
+    width: 100%;
+    margin: 1rem 0;
+  }
+
+  .navbar-nav {
+    margin-bottom: 1rem;
+  }
+
+  .nav-icons {
+    flex-direction: row;
+    justify-content: space-around;
+    width: 100%;
+  }
+}
+
+.guest-welcome {
+  color: #fff;
+}
+
+span {
+  color: #ffffff !important;
+}

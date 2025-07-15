@@ -1,0 +1,115 @@
+.footer-container {
+  background-color: #111111; /* Deep black */
+  color: #ffffff;
+  padding: 4rem 0 2rem 0;
+}
+
+.footer-logo {
+  width: 60px;
+  margin-bottom: 1rem;
+  background-color: white;
+  border-radius: 8px;
+  padding: 5px;
+}
+
+.footer-about p {
+  color: #bbbbbb;
+  font-size: 0.9rem;
+}
+
+.social-icons a {
+  color: #ffffff;
+  font-size: 1.5rem;
+  margin-right: 1rem;
+  transition: color 0.3s ease;
+}
+
+.social-icons a:hover {
+  color: #bbbbbb;
+}
+
+.footer-title {
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 1.5rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  font-size: 1rem;
+}
+
+.footer-links {
+  list-style: none;
+  padding-left: 0;
+}
+
+.footer-links li {
+  margin-bottom: 0.75rem;
+}
+
+.footer-links a {
+  color: #bbbbbb;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.footer-contact {
+  list-style: none;
+  padding-left: 0;
+}
+
+.footer-contact li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #bbbbbb;
+}
+
+.footer-contact svg {
+  margin-right: 1rem;
+  font-size: 1.2rem;
+  min-width: 20px;
+}
+
+.footer-contact a {
+  color: #bbbbbb;
+  text-decoration: none;
+}
+
+.footer-contact a:hover {
+  color: #ffffff;
+}
+
+.business-hours {
+  background-color: rgba(255, 255, 255, 0.05);
+  padding: 1rem;
+  border-radius: 8px;
+  margin-top: 1.5rem;
+}
+
+.business-hours h6 {
+  font-weight: 600;
+  color: #ffffff;
+}
+
+.business-hours p {
+  margin-bottom: 0.25rem;
+  font-size: 0.9rem;
+  color: #bbbbbb;
+}
+
+.footer-bottom {
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  padding-top: 2rem;
+  margin-top: 2rem;
+}
+
+.footer-bottom p {
+  margin: 0;
+  color: #bbbbbb;
+  font-size: 0.9rem;
+}

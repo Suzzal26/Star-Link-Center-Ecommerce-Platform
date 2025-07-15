@@ -1,0 +1,10 @@
+.user-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.user-layout-main {
+  flex: 1;
+  overflow: auto;
+}
