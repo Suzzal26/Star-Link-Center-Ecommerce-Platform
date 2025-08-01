@@ -1,0 +1,11 @@
+.login-container {
+  background-color: #efefef;
+}
+
+.login-logo {
+  max-width: 100px;
+}
+
+.password-toggle {
+  cursor: pointer;
+}

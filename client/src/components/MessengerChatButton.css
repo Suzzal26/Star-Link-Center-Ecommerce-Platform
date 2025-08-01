@@ -1,0 +1,23 @@
+.messenger-chat-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 9999;
+  background: #0084ff;
+  color: #fff;
+  border: none;
+  border-radius: 50%;
+  width: 56px;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.messenger-chat-btn:hover {
+  background: #005ecb;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.22);
+}

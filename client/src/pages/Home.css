@@ -1,0 +1,475 @@
+/* 🔄 Bootstrap Carousel */
+.carousel {
+  text-align: center;
+  margin-bottom: 30px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 123, 255, 0.1),
+    rgba(255, 165, 0, 0.1)
+  ); /* Soft blue & orange */
+  padding: 20px 0;
+  border-radius: 10px;
+}
+
+.carousel-image {
+  width: 100%;
+  max-height: 400px;
+  object-fit: contain;
+  border-radius: 8px;
+  background-color: #f8f8f8;
+}
+
+/* 🎯 Carousel Controls */
+.carousel-control-prev,
+.carousel-control-next {
+  filter: invert(1); /* White arrows */
+}
+
+/* 🔥 Latest Products */
+.products-grid {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+  padding: 20px 0;
+}
+
+.product-card {
+  width: 180px;
+  text-align: center;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  transition: transform 0.2s ease-in-out;
+  cursor: pointer;
+  text-decoration: none;
+  color: inherit;
+}
+
+.product-card:hover {
+  transform: scale(1.05);
+}
+
+.product-card img {
+  width: 100%;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 5px;
+}
+
+.product-title {
+  color: black;
+  font-weight: bold;
+  font-size: 14px;
+  margin-top: 5px;
+}
+
+.product-price {
+  font-size: 13px;
+  color: #555;
+  margin-top: 2px;
+}
+
+/* 🖨️ Printer Products */
+.no-printers {
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+}
+
+/* ✅ We Provide Solutions On - Clean & Minimal */
+.solutions-section {
+  text-align: center;
+  padding: 40px 20px;
+  background: none; /* No disruption */
+}
+
+.solutions-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #333;
+  text-transform: uppercase;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.solutions-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 2px;
+  background-color: #007bff; /* Soft blue */
+  margin: 10px auto;
+}
+
+/* 🏆 Brand Grid Layout */
+.brand-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 40px;
+  align-items: center;
+  max-width: 1000px;
+  margin: auto;
+}
+
+/* 🖼️ Brand Logo Styling */
+.brand-logo {
+  max-width: 140px;
+  height: auto;
+  object-fit: contain;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+  filter: brightness(0.9);
+}
+
+.brand-logo:hover {
+  transform: scale(1.1);
+  filter: brightness(1);
+}
+
+/* 🛠️ Repairing Services */
+.repairing-section {
+  text-align: center;
+  padding: 30px;
+  background: linear-gradient(
+    to right,
+    rgba(0, 123, 255, 0.05),
+    rgba(255, 165, 0, 0.05)
+  ); /* Soft Blue & Orange */
+  border-radius: 10px;
+}
+
+.repairing-section h2 {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.repairing-section a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+.repairing-section a:hover {
+  background-color: #0056b3;
+}
+
+/* 📞 Contact Us */
+.contact-section {
+  text-align: center;
+  padding: 30px;
+  background: #f8f9fa;
+  border-radius: 10px;
+}
+
+.contact-section h2 {
+  font-size: 24px;
+  font-weight: bold;
+}
+
+.contact-section p {
+  font-size: 16px;
+  color: #555;
+}
+
+.contact-section a {
+  display: inline-block;
+  margin-top: 10px;
+  padding: 8px 16px;
+  background-color: #007bff;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: 0.3s ease;
+}
+
+.contact-section a:hover {
+  background-color: #0056b3;
+}
+
+/* General Section Styling */
+.section-title {
+  font-weight: 700;
+  color: #212529;
+}
+
+.section-subtitle {
+  font-size: 1.1rem;
+  color: #6c757d;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+/* Hero Carousel */
+.hero-swiper {
+  height: 500px;
+}
+
+.hero-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-size: cover;
+  background-position: center;
+  position: relative;
+  background-image: var(--hero-bg-image);
+}
+
+.hero-slide::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-title-main {
+  font-size: 3.5rem;
+  font-weight: 700;
+  color: #fff;
+}
+
+.hero-subtitle-main {
+  font-size: 1.25rem;
+  margin-bottom: 2rem;
+  color: #fff;
+}
+
+.hero-btn {
+  padding: 0.9rem 2.5rem;
+  font-weight: 500;
+  background: #000 !important;
+  color: #ffd700 !important;
+  border: 2px solid #ffd700 !important;
+  border-radius: 12px;
+  font-size: 1.25rem;
+  transition: background 0.2s, color 0.2s;
+}
+.hero-btn:hover {
+  background: #ffd700 !important;
+  color: #000 !important;
+  border: 2px solid #000 !important;
+}
+
+/* Why Choose Us Section */
+.why-choose-us-section {
+  padding: 5rem 0;
+}
+
+.choose-us-card {
+  padding: 2rem;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  transition: all 0.3s ease;
+  height: 100%;
+}
+
+.choose-us-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+}
+
+.choose-us-icon {
+  font-size: 3rem;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+}
+
+.choose-us-title {
+  font-weight: 600;
+  margin-bottom: 1rem;
+}
+
+/* Featured Products Section */
+.featured-products-section {
+  padding: 5rem 0;
+  background-color: #f8f9fa;
+}
+
+.products-swiper .swiper-button-next,
+.products-swiper .swiper-button-prev {
+  color: #ffd700;
+}
+
+.product-card-main {
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 16px;
+  overflow: hidden;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 420px;
+  width: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 auto;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.product-card-main:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+}
+
+.product-image-main {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-bottom: 1px solid #000;
+}
+
+.product-info-main {
+  padding: 1.5rem 1rem 1rem 1rem;
+  text-align: center;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.product-name-main {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: #000;
+}
+
+.product-price-main {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #ffd700;
+  margin-bottom: 1rem;
+}
+
+.product-category-tag {
+  display: inline-block;
+  border: 2px solid #ffd700;
+  background: #000;
+  color: #fff;
+  font-size: 1rem;
+  font-weight: bold;
+  padding: 10px 32px;
+  border-radius: 20px;
+  margin-bottom: 18px;
+  text-align: center;
+}
+
+.btn,
+.btn.btn-outline-primary,
+.btn.btn-primary,
+.btn.w-100 {
+  background: #000;
+  color: #ffd700;
+  border: 2px solid #ffd700;
+  border-radius: 8px;
+  font-weight: 600;
+  padding: 10px 0;
+  margin-top: 8px;
+  transition: background 0.2s, color 0.2s;
+}
+
+.btn:hover,
+.btn.btn-outline-primary:hover,
+.btn.btn-primary:hover,
+.btn.w-100:hover {
+  background: #ffd700;
+  color: #000;
+  border: 2px solid #000;
+}
+
+.products-swiper .swiper-button-next,
+.products-swiper .swiper-button-prev {
+  color: #ffd700;
+}
+
+/* Product Categories Section */
+.product-categories-section {
+  padding: 5rem 0;
+}
+
+.category-card-main {
+  background-color: #fff;
+  border: 2px solid #000;
+  border-radius: 16px;
+  padding: 2rem;
+  text-align: center;
+  transition: all 0.3s ease;
+  display: block;
+  color: #000;
+}
+
+.category-card-main:hover {
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  transform: translateY(-10px);
+  border-color: #ffd700;
+}
+
+.category-icon-main {
+  font-size: 3rem;
+  color: #ffd700;
+  margin-bottom: 1.5rem;
+}
+
+.category-title-main {
+  font-weight: 600;
+  color: #000;
+}
+
+/* Brands Slider Section */
+.brands-section {
+  padding: 4rem 0;
+  background-color: #f8f9fa;
+  border-top: 1px solid #e9ecef;
+}
+
+.brand-slide {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 80px; /* Set a fixed height for alignment */
+}
+
+.brand-slide img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Ensure logos scale correctly */
+  filter: grayscale(100%);
+  opacity: 0.6;
+  transition: all 0.3s ease;
+}
+
+.brand-slide:hover img {
+  filter: grayscale(0%);
+  opacity: 1;
+  transform: scale(1.1);
+}
+
+/* Printers and Misc Sections */
+.printers-section,
+.misc-section {
+  padding: 5rem 0;
+}
+
+.printers-section {
+  background-color: #ffffff;
+}
+
+.misc-section {
+  background-color: #f8f9fa;
+}

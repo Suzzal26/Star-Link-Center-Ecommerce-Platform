@@ -1,0 +1,18 @@
+.register-container {
+  padding-top: 2rem;
+  padding-bottom: 2rem;
+  background-color: #efefef;
+}
+
+.register-form-wrapper {
+  max-width: 600px;
+  margin: auto;
+}
+
+.register-logo {
+  max-width: 100px;
+}
+
+.password-toggle {
+  cursor: pointer;
+}

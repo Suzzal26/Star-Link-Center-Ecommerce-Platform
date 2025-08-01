@@ -1,0 +1,53 @@
+.address-map-picker {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.address-map-picker input {
+  font-size: 0.95rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #ced4da;
+  width: 100%;
+}
+
+.address-map-picker input[readonly] {
+  background-color: #f8f9fa;
+  color: #495057;
+}
+
+.leaflet-map-container {
+  height: 200px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  overflow: hidden;
+  z-index: 0;
+}
+
+/* Autocomplete suggestion dropdown */
+.autocomplete-results {
+  list-style: none;
+  padding: 0;
+  margin: -0.5rem 0 0 0;
+  border: 1px solid #ced4da;
+  border-top: none;
+  border-radius: 0 0 6px 6px;
+  max-height: 160px;
+  overflow-y: auto;
+  background-color: #fff;
+  z-index: 1000;
+  position: relative;
+}
+
+.autocomplete-results li {
+  padding: 0.5rem;
+  cursor: pointer;
+  font-size: 0.9rem;
+}
+
+.autocomplete-results li:hover {
+  background-color: #f1f1f1;
+}
