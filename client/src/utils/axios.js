@@ -1,7 +1,8 @@
 import axios from "axios";
+import { BASE_URL } from "../constants";
 
 const instance = axios.create({
-  // Remove baseURL to use relative paths with Vite proxy
+  baseURL: BASE_URL,
   timeout: 5000,
   withCredentials: true, // ✅ Allows cookies, but let's also add token manually
   headers: {

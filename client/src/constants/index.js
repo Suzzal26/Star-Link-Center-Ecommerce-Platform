@@ -1,4 +1,12 @@
-export const BASE_URL = import.meta.env.VITE_API_URL;
+// Environment-specific API configuration
+const isDevelopment = import.meta.env.DEV;
+const isProduction = import.meta.env.PROD;
+
+// Use full URL in production, relative path in development (for Vite proxy)
+export const BASE_URL = isProduction
+  ? "https://star-link-center-ecommerce-platform.onrender.com"
+  : "";
+
 export const API_URL = BASE_URL + "/api/v1";
 
 export const APIs = {

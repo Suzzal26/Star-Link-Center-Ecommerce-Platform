@@ -17,6 +17,7 @@ import "swiper/css/navigation";
 import "swiper/css/pagination";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./Home.css";
+import { API_URL } from "../constants";
 
 const Home = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
@@ -63,14 +64,14 @@ const Home = () => {
       // Test the proxy connection first
       try {
         console.log("🧪 Testing proxy connection...");
-        const testResponse = await axios.get("/api/v1/auth/test");
+        const testResponse = await axios.get(`${API_URL}/auth/test`);
         console.log("✅ Proxy test successful:", testResponse.data);
       } catch (testError) {
         console.log("❌ Proxy test failed:", testError.message);
       }
 
       try {
-        const { data } = await axios.get("/api/v1/products");
+        const { data } = await axios.get(`${API_URL}/products`);
         // Limit featured products to 8
         setFeaturedProducts(data.sort(() => 0.5 - Math.random()).slice(0, 8));
         // Get printers

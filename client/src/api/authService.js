@@ -1,7 +1,8 @@
 import axios from "axios";
+import { API_URL } from "../constants";
 
-// Use relative paths for local development with Vite proxy
-const AUTH_BASE = "/api/v1/auth";
+// Use API_URL from constants for consistent API calls
+const AUTH_BASE = `${API_URL}/auth`;
 
 // Register User
 export const registerUser = async (userData) => {
