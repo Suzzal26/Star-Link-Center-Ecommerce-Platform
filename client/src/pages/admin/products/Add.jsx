@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { API_URL } from "../../../constants";
 
 const ProductAdd = () => {
   const [product, setProduct] = useState({
@@ -76,22 +77,72 @@ const ProductAdd = () => {
         },
       };
 
-      const response = await axios.post("http://localhost:5000/api/v1/products", formData, config);
+              const response = await axios.post(
+          `${API_URL}/products`,
+        formData,
+        config
+      );
       console.log("✅ Product Added Successfully!", response.data);
 
       navigate("/admin/products");
     } catch (error) {
-      console.error("❌ Error adding product:", error.response?.data?.message || error.message);
+      console.error(
+        "❌ Error adding product:",
+        error.response?.data?.message || error.message
+      );
     }
   };
 
   const getSubcategories = (category) => {
     const subcategories = {
-      Printer: ["Dot-Matrix", "ID Card", "Inkjet", "Laser", "Photo", "Ink Cartridge", "Ribbon Cartridge", "Other Printer Components"],
-      Computer: ["All-in-One PC", "Monitor", "CPU", "Refurbished", "Laptop", "Cooling Fan", "Graphic Card", "Processor", "Power Supply Unit", "RAM", "Motherboard", "Keyboards", "Mouse", "SSD"],
+      Printer: [
+        "Dot-Matrix",
+        "ID Card",
+        "Inkjet",
+        "Laser",
+        "Photo",
+        "Ink Cartridge",
+        "Ribbon Cartridge",
+        "Other Printer Components",
+      ],
+      Computer: [
+        "All-in-One PC",
+        "Monitor",
+        "CPU",
+        "Refurbished",
+        "Laptop",
+        "Cooling Fan",
+        "Graphic Card",
+        "Processor",
+        "Power Supply Unit",
+        "RAM",
+        "Motherboard",
+        "Keyboards",
+        "Mouse",
+        "SSD",
+      ],
       Projector: [],
-      POS: ["Barcode Label Printer", "Barcode Label Sticker", "Barcode Scanner", "Cash Drawer", "POS Printer", "POS Terminal", "Paper Roll", "Ribbon"],
-      Other: ["CCTV", "HDD", "Headphones", "ID Card", "Power Strip", "Speaker", "Bag", "Web Cam", "Miscellaneous"],
+      POS: [
+        "Barcode Label Printer",
+        "Barcode Label Sticker",
+        "Barcode Scanner",
+        "Cash Drawer",
+        "POS Printer",
+        "POS Terminal",
+        "Paper Roll",
+        "Ribbon",
+      ],
+      Other: [
+        "CCTV",
+        "HDD",
+        "Headphones",
+        "ID Card",
+        "Power Strip",
+        "Speaker",
+        "Bag",
+        "Web Cam",
+        "Miscellaneous",
+      ],
     };
     return subcategories[category] || [];
   };
@@ -126,7 +177,11 @@ const ProductAdd = () => {
 
         <div className="form-group">
           <label>Description (Supports formatting)</label>
-          <ReactQuill theme="snow" value={product.description} onChange={handleDescriptionChange} />
+          <ReactQuill
+            theme="snow"
+            value={product.description}
+            onChange={handleDescriptionChange}
+          />
         </div>
 
         <div className="form-group">
@@ -191,7 +246,12 @@ const ProductAdd = () => {
           />
           {product.imagePreview && (
             <div className="mt-2">
-              <img src={product.imagePreview} alt="Preview" width="100" height="100" />
+              <img
+                src={product.imagePreview}
+                alt="Preview"
+                width="100"
+                height="100"
+              />
             </div>
           )}
         </div>

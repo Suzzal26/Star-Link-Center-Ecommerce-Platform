@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import Swal from "sweetalert2";
+import { API_URL } from "../constants";
 import "./Contact.css";
 
 const Contact = () => {
@@ -19,7 +20,7 @@ const Contact = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("http://localhost:5000/api/v1/contact", formData);
+      await axios.post(`${API_URL}/contact`, formData);
       Swal.fire("Sent!", "Your message has been sent successfully!", "success");
       setFormData({ name: "", email: "", subject: "", message: "" });
     } catch (error) {

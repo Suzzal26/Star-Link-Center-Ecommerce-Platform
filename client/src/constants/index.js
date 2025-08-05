@@ -5,7 +5,7 @@ const isProduction = import.meta.env.PROD;
 // Use full URL in production, relative path in development (for Vite proxy)
 export const BASE_URL = isProduction
   ? "https://star-link-center-ecommerce-platform.onrender.com"
-  : "";
+  : "http://localhost:5000";
 
 export const API_URL = BASE_URL + "/api/v1";
 

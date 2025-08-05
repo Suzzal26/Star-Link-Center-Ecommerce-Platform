@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../constants";
 import Notify from "../components/Alert";
 
 const VerifyEmail = () => {
@@ -23,8 +24,10 @@ const VerifyEmail = () => {
 
     const verify = async () => {
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/v1/auth/verify-email/${token}`);
-        
+        const { data } = await axios.get(
+          `${API_URL}/auth/verify-email/${token}`
+        );
+
         if (data && data.message) {
           setMessage(data.message);
         } else {
@@ -59,9 +62,7 @@ const VerifyEmail = () => {
               <div className="alert alert-info">Verifying token...</div>
             )}
 
-            {!loading && error && (
-              <Notify variant="danger" msg={error} />
-            )}
+            {!loading && error && <Notify variant="danger" msg={error} />}
 
             {!loading && !error && message && (
               <Notify variant="success" msg={message} />

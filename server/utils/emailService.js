@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
 
 // ✅ Email for account verification
 exports.sendVerificationEmail = async (email, token) => {
-  const verifyLink = `http://localhost:5000/api/v1/auth/verify-email/${token}`;
+  const verifyLink = `${process.env.BASE_URL || 'https://star-link-center-ecommerce-platform.onrender.com'}/data/v1/auth/verify-email/${token}`;
 
   const message = `
     <h2>Email Verification</h2>

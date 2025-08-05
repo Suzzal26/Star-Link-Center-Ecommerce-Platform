@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useLocation, Link } from "react-router-dom";
 import axios from "axios";
+import { API_URL, BASE_URL } from "../constants";
 import "./SearchResults.css"; // ✅ Import CSS for styling
 
 const SearchResults = () => {
@@ -19,14 +20,16 @@ const SearchResults = () => {
       setLoading(true);
       setError("");
       try {
-        const { data } = await axios.get(`http://localhost:5000/api/v1/search?query=${query}`);
+        const { data } = await axios.get(
+          `${API_URL}/search?query=${query}`
+        );
 
         // ✅ Fix image URL if it's missing "http"
         const formattedResults = data.map((item) => ({
           ...item,
           image: item.image?.startsWith("http")
             ? item.image
-            : `http://localhost:5000/uploads/${item.image}`,
+            : `${BASE_URL}/assets/${item.image}`,
         }));
 
         console.log("🔍 Search Results:", formattedResults);
@@ -44,27 +47,35 @@ const SearchResults = () => {
 
   return (
     <div className="search-results-page">
-      <h2>Search Results for: <span className="query-text">{query}</span></h2>
+      <h2>
+        Search Results for: <span className="query-text">{query}</span>
+      </h2>
 
       {loading && <p>Loading...</p>}
       {error && <p className="error-message">{error}</p>}
 
       <div className="search-results-container">
-        {results.length > 0 ? (
-          results.map((result) => (
-            <div key={result.id} className="search-result-card">
-              <Link to={`/products/${result.id}`} className="search-result-link">
-                <img className="search-result-image" src={result.image} alt={result.title} onError={(e) => (e.target.src = "/placeholder.jpg")} />
-                <div className="search-result-info">
-                  <h3 className="search-result-title">{result.title}</h3>
-                  <button className="view-details-btn">View Details</button>
-                </div>
-              </Link>
-            </div>
-          ))
-        ) : (
-          !loading && <p>No results found.</p>
-        )}
+        {results.length > 0
+          ? results.map((result) => (
+              <div key={result.id} className="search-result-card">
+                <Link
+                  to={`/products/${result.id}`}
+                  className="search-result-link"
+                >
+                  <img
+                    className="search-result-image"
+                    src={result.image}
+                    alt={result.title}
+                    onError={(e) => (e.target.src = "/placeholder.jpg")}
+                  />
+                  <div className="search-result-info">
+                    <h3 className="search-result-title">{result.title}</h3>
+                    <button className="view-details-btn">View Details</button>
+                  </div>
+                </Link>
+              </div>
+            ))
+          : !loading && <p>No results found.</p>}
       </div>
     </div>
   );

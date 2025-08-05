@@ -2,6 +2,7 @@ import { useEffect, useState, useContext, useRef } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 import { CartContext } from "../contexts/CartContext";
+import { API_URL, BASE_URL } from "../constants";
 import "./ProductDetail.css";
 
 const ProductDetail = () => {
@@ -19,11 +20,11 @@ const ProductDetail = () => {
     const fetchProduct = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/v1/products/${id}`
+          `${API_URL}/products/${id}`
         );
         data.image = data.image?.startsWith("http")
           ? data.image
-          : `http://localhost:5000/uploads/${data.image}`;
+          : `${BASE_URL}/assets/${data.image}`;
         setProduct(data);
       } catch (err) {
         setError("Product not found.");

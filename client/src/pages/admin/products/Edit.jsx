@@ -3,6 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
+import { API_URL, BASE_URL } from "../../../constants";
 import "./Edit.css";
 
 const ProductEdit = () => {
@@ -25,7 +26,7 @@ const ProductEdit = () => {
     const fetchProduct = async () => {
       try {
         const { data } = await axios.get(
-          `http://localhost:5000/api/v1/products/${id}`
+          `${API_URL}/products/${id}`
         );
         setProduct((prev) => ({
           ...prev,
@@ -36,7 +37,7 @@ const ProductEdit = () => {
           subcategory: data.subcategory || prev.subcategory,
           stock: data.stock,
           existingImage: data.image
-            ? `http://localhost:5000/uploads/${data.image}`
+            ? `${BASE_URL}/assets/${data.image}`
             : prev.existingImage,
         }));
         setLoading(false);
@@ -80,7 +81,7 @@ const ProductEdit = () => {
       formData.append("stock", product.stock);
       if (product.image) formData.append("image", product.image);
 
-      await axios.put(`http://localhost:5000/api/v1/products/${id}`, formData, {
+              await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -108,7 +109,7 @@ const ProductEdit = () => {
         return;
       }
 
-      await axios.delete(`http://localhost:5000/api/v1/products/${id}`, {
+              await axios.delete(`${API_URL}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 

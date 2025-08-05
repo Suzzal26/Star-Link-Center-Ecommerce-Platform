@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Form, FormControl, ListGroup, Spinner } from "react-bootstrap";
 import { FaSearch } from "react-icons/fa";
+import { API_URL } from "../constants";
 import "./SearchBar.css";
 
 const SearchBar = () => {
@@ -24,7 +25,7 @@ const SearchBar = () => {
       try {
         console.log("🚀 Sending API request with query:", query);
         const { data } = await axios.get(
-          `http://localhost:5000/api/v1/search`,
+          `${API_URL}/search`,
           {
             params: { q: query }, // ✅ Use `params` to properly send query
           }

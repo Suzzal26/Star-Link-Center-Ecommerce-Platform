@@ -1,6 +1,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { useParams, Link } from "react-router-dom";
 import axios from "axios";
+import { API_URL } from "../../../constants";
 import "./List.css";
 
 const ProductList = () => {
@@ -63,7 +64,7 @@ const ProductList = () => {
 
   const fetchProducts = useCallback(async () => {
     try {
-      let url = "http://localhost:5000/api/v1/products";
+      let url = `${API_URL}/products`;
       const params = [];
 
       if (selectedCategory) params.push(`category=${selectedCategory}`);

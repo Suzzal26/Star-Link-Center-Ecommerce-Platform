@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom"; // ✅ Get category & subcategory from URL
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { API_URL } from "../constants";
 import "./Products.css"; // Import the scoped CSS
 
 const Products = () => {
@@ -14,7 +15,7 @@ const Products = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        let url = "http://localhost:5000/api/v1/products";
+        let url = `${API_URL}/products`;
 
         if (category && subcategory) {
           url += `?category=${category}&subcategory=${subcategory}`;

@@ -3,6 +3,7 @@ import { useNavigate, Link } from "react-router-dom";
 import { getCurrentUser, isLoggedIn } from "../../../utils/login";
 import { removeToken } from "../../../utils/token";
 import axios from "axios";
+import { API_URL } from "../../../constants";
 import Tab from "react-bootstrap/Tab";
 import Tabs from "react-bootstrap/Tabs";
 import AddressMapPicker from "../../../components/AddressMapPicker"; // ✅ Add this
@@ -26,7 +27,7 @@ const Profile = () => {
       const userData = getCurrentUser();
       try {
         const response = await axios.get(
-          `http://localhost:5000/api/v1/users/${userData.id}`
+          `${API_URL}/users/${userData.id}`
         );
         setUser(response.data);
         setFormData({
@@ -49,7 +50,7 @@ const Profile = () => {
     const fetchUserOrders = async () => {
       try {
         const res = await axios.get(
-          `http://localhost:5000/api/v1/orders/my-orders`,
+          `${API_URL}/orders/my-orders`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -86,8 +87,8 @@ const Profile = () => {
         lng: mapData.lng,
       };
 
-      const res = await axios.put(
-        `http://localhost:5000/api/v1/users/${user._id}`,
+              const res = await axios.put(
+          `${API_URL}/users/${user._id}`,
         payload
       );
       console.log("✅ Profile updated:", res.data);
