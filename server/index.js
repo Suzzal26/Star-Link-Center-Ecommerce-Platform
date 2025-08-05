@@ -32,6 +32,12 @@ app.use(
 app.use(express.json());
 app.use(cookieParser());
 
+// ✅ Add request logging middleware
+app.use((req, res, next) => {
+  console.log(`🌐 ${req.method} ${req.url} - ${new Date().toISOString()}`);
+  next();
+});
+
 // ✅ Ensure `uploads/` folder exists
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
@@ -75,15 +81,33 @@ console.log("🛠 Registered API Routes:");
 app._router.stack.forEach((layer) => {
   if (layer.route) {
     console.log(
-      `➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${layer.route.path}`
+      `➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${
+        layer.route.path
+      }`
     );
   }
 });
 
 // ✅ MongoDB Connection
+console.log("🔍 [DB] Attempting to connect to MongoDB...");
+console.log(
+  "🔍 [DB] Connection string:",
+  MONGO_URI.replace(/\/\/.*@/, "//***:***@")
+); // Hide credentials
+
 mongoose
   .connect(MONGO_URI)
-  .then(() => console.log("✅ MongoDB connected"))
+  .then(() => {
+    console.log("✅ MongoDB connected successfully");
+    console.log("🔍 [DB] Database name:", mongoose.connection.db.databaseName);
+    console.log(
+      "🔍 [DB] Collections:",
+      mongoose.connection.db
+        .listCollections()
+        .toArray()
+        .then((cols) => cols.map((c) => c.name))
+    );
+  })
   .catch((err) => {
     console.error("❌ MongoDB connection failed:", err.message);
     setTimeout(() => process.exit(1), 5000);

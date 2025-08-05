@@ -1,10 +1,9 @@
 import instance from "../utils/axios";
-import { APIs } from "../constants";
 
 // ✅ Register User with Improved Error Handling
 export const register = async (payload) => {
   try {
-    const response = await instance.post(APIs.USERS + "/register", payload, {
+    const response = await instance.post("/api/v1/auth/register", payload, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -22,10 +21,10 @@ export const register = async (payload) => {
 // ✅ Login User
 export const login = async (payload) => {
   try {
-    console.log("📤 Sending Login Request to:", APIs.USERS + "/login");
+    console.log("📤 Sending Login Request to:", "/api/v1/auth/login");
     console.log("🛠️ Login Request Payload:", payload);
 
-    const response = await instance.post(APIs.USERS + "/login", payload, {
+    const response = await instance.post("/api/v1/auth/login", payload, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -42,7 +41,7 @@ export const login = async (payload) => {
 
 // ✅ Forgot Password - Generate OTP
 export const generateFPToken = (payload) => {
-  return instance.post(APIs.USERS + "/generate-fp-token", payload, {
+  return instance.post("/api/v1/auth/generate-fp-token", payload, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -52,7 +51,7 @@ export const generateFPToken = (payload) => {
 
 // ✅ Verify OTP for Password Reset
 export const verifyFPToken = (payload) => {
-  return instance.post(APIs.USERS + "/verify-fp-token", payload, {
+  return instance.post("/api/v1/auth/verify-fp-token", payload, {
     headers: {
       "Content-Type": "application/json",
     },
@@ -63,7 +62,7 @@ export const verifyFPToken = (payload) => {
 // ✅ Reset Password via OTP
 export const resetPassword = ({ email, otp, newPassword }) => {
   return instance.post(
-    APIs.USERS + "/reset-password",
+    "/api/v1/auth/reset-password",
     { email, otp, newPassword },
     {
       headers: {
@@ -74,22 +73,18 @@ export const resetPassword = ({ email, otp, newPassword }) => {
   );
 };
 
-
 // ✅ Get All Users
 export const getAllUsers = ({ limit, page, name }) => {
-  return instance.get(
-    `${APIs.USERS}?page=${page}&limit=${limit}&name=${name}`,
-    {
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
-      },
-    }
-  );
+  return instance.get(`/api/v1/auth?page=${page}&limit=${limit}&name=${name}`, {
+    headers: {
+      Authorization: `Bearer ${localStorage.getItem("token")}`,
+    },
+  });
 };
 
 // ✅ Get a Single User by ID
 export const getOneUser = (id) => {
-  return instance.get(`${APIs.USERS}/${id}`, {
+  return instance.get(`/api/v1/auth/${id}`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -98,7 +93,7 @@ export const getOneUser = (id) => {
 
 // ✅ Add a New User
 export const addUser = (payload) => {
-  return instance.post(APIs.USERS, payload, {
+  return instance.post("/api/v1/auth", payload, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -107,7 +102,7 @@ export const addUser = (payload) => {
 
 // ✅ Get User Profile
 export const getProfile = () => {
-  return instance.get(`${APIs.USERS}/get-profile`, {
+  return instance.get(`/api/v1/auth/get-profile`, {
     headers: {
       Authorization: `Bearer ${localStorage.getItem("token")}`,
     },
@@ -117,7 +112,7 @@ export const getProfile = () => {
 // ✅ Block/Unblock User
 export const blockUser = (email) => {
   return instance.patch(
-    `${APIs.USERS}/block-user`,
+    `/api/v1/auth/block-user`,
     { email },
     {
       headers: {

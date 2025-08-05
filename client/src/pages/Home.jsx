@@ -57,6 +57,18 @@ const Home = () => {
 
   useEffect(() => {
     const fetchAllProducts = async () => {
+      setLoading(true);
+      setError(null);
+
+      // Test the proxy connection first
+      try {
+        console.log("🧪 Testing proxy connection...");
+        const testResponse = await axios.get("/api/v1/auth/test");
+        console.log("✅ Proxy test successful:", testResponse.data);
+      } catch (testError) {
+        console.log("❌ Proxy test failed:", testError.message);
+      }
+
       try {
         const { data } = await axios.get("/api/v1/products");
         // Limit featured products to 8

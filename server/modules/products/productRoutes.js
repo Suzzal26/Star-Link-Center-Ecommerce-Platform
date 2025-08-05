@@ -11,23 +11,23 @@ console.log("✅ productRoutes.js is being executed!");
 
 // ✅ Test Route (Keep for Debugging)
 router.get("/test", (req, res) => {
-    res.json({ message: "✅ Test route is working!" });
+  res.json({ message: "✅ Test route is working!" });
 });
 
 // ✅ Ensure "uploads" folder exists
 const uploadDir = path.join(__dirname, "../../uploads");
 if (!fs.existsSync(uploadDir)) {
-    fs.mkdirSync(uploadDir, { recursive: true });
+  fs.mkdirSync(uploadDir, { recursive: true });
 }
 
 // ✅ Configure Multer for Image Uploads
 const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, "uploads/");
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + path.extname(file.originalname));
-    },
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, Date.now() + path.extname(file.originalname));
+  },
 });
 const upload = multer({ storage });
 
@@ -41,56 +41,82 @@ const deleteProduct = productController.deleteProduct;
 
 // ✅ GET All Products (Supports Category & Subcategory Filters)
 router.get("/", async (req, res) => {
-    try {
-        let query = {}; 
+  console.log("🔍 GET /api/v1/products - Request received!");
+  console.log("📝 Request URL:", req.url);
+  console.log("📝 Request method:", req.method);
+  console.log("📝 Request headers:", req.headers);
 
-        if (req.query.category) {
-            query.category = { $regex: new RegExp(`^${req.query.category.trim()}$`, "i") };
-        }
+  try {
+    let query = {};
 
-        if (req.query.subcategory) {
-            query.subcategory = { $regex: new RegExp(`^${req.query.subcategory.trim()}$`, "i") };
-        }
-
-        const products = await Product.find(query);
-        if (!products.length) return res.status(404).json({ message: "No products found" });
-
-        // ✅ Format image URLs correctly
-        const formattedProducts = products.map(product => ({
-            ...product._doc,
-            image: product.image && !product.image.startsWith("http")
-                ? `http://localhost:5000/uploads/${product.image}`
-                : product.image,
-        }));
-
-        res.json(formattedProducts);
-    } catch (error) {
-        console.error("Error fetching products:", error);
-        res.status(500).json({ error: "Server error" });
+    if (req.query.category) {
+      query.category = {
+        $regex: new RegExp(`^${req.query.category.trim()}$`, "i"),
+      };
     }
+
+    if (req.query.subcategory) {
+      query.subcategory = {
+        $regex: new RegExp(`^${req.query.subcategory.trim()}$`, "i"),
+      };
+    }
+
+    console.log("🔍 Query:", query);
+    const products = await Product.find(query);
+    console.log("🔍 Found products:", products.length);
+
+    if (!products.length) {
+      console.log("❌ No products found, returning 404");
+      return res.status(404).json({ message: "No products found" });
+    }
+
+    // ✅ Format image URLs correctly
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      image:
+        product.image && !product.image.startsWith("http")
+          ? `http://localhost:5000/uploads/${product.image}`
+          : product.image,
+    }));
+
+    console.log("✅ Returning products:", formattedProducts.length);
+    res.json(formattedProducts);
+  } catch (error) {
+    console.error("❌ Error fetching products:", error);
+    res.status(500).json({ error: "Server error" });
+  }
 });
 
 // ✅ GET Products by Category (Supports Subcategories)
 router.get("/category/:category", async (req, res) => {
-    try {
-        const category = req.params.category.trim().toLowerCase();
-        let query = { category };
+  try {
+    const category = req.params.category.trim().toLowerCase();
+    let query = { category };
 
-        if (req.query.subcategory) {
-            query.subcategory = { $regex: new RegExp(`^${req.query.subcategory.trim()}$`, "i") };
-        }
-
-        const products = await Product.find(query);
-        if (!products.length) return res.status(404).json({ message: "No products found in this category" });
-
-        res.json(products.map(product => ({
-            ...product._doc,
-            image: product.image ? `http://localhost:5000/uploads/${product.image}` : null,
-        })));
-    } catch (error) {
-        console.error("Error fetching products by category:", error);
-        res.status(500).json({ message: "Server error", error });
+    if (req.query.subcategory) {
+      query.subcategory = {
+        $regex: new RegExp(`^${req.query.subcategory.trim()}$`, "i"),
+      };
     }
+
+    const products = await Product.find(query);
+    if (!products.length)
+      return res
+        .status(404)
+        .json({ message: "No products found in this category" });
+
+    res.json(
+      products.map((product) => ({
+        ...product._doc,
+        image: product.image
+          ? `http://localhost:5000/uploads/${product.image}`
+          : null,
+      }))
+    );
+  } catch (error) {
+    console.error("Error fetching products by category:", error);
+    res.status(500).json({ message: "Server error", error });
+  }
 });
 
 // ✅ GET Single Product by ID
@@ -104,13 +130,19 @@ router.delete("/:id", verifyAdmin, deleteProduct);
 console.log("✅ Product routes are being registered");
 
 // ✅ Log the registered routes
-console.log("📂 Registered Product Routes:", router.stack.map(r => r.route?.path).filter(Boolean));
+console.log(
+  "📂 Registered Product Routes:",
+  router.stack.map((r) => r.route?.path).filter(Boolean)
+);
 console.log("📂 Final Registered Routes in Express:");
 router.stack.forEach((layer) => {
-    if (layer.route) {
-        console.log(`➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${layer.route.path}`);
-    }
+  if (layer.route) {
+    console.log(
+      `➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${
+        layer.route.path
+      }`
+    );
+  }
 });
-
 
 module.exports = router;
