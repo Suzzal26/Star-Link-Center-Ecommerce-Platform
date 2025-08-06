@@ -28,6 +28,7 @@ const ProductEdit = () => {
         const { data } = await axios.get(
           `${API_URL}/products/${id}`
         );
+        console.log('📦 Fetched product data:', data);
         setProduct((prev) => ({
           ...prev,
           name: data.name,
@@ -36,9 +37,7 @@ const ProductEdit = () => {
           category: data.category || prev.category,
           subcategory: data.subcategory || prev.subcategory,
           stock: data.stock,
-          existingImage: data.image
-            ? `${BASE_URL}/assets/${data.image}`
-            : prev.existingImage,
+          existingImage: data.image || null,
         }));
         setLoading(false);
       } catch (error) {
@@ -79,22 +78,32 @@ const ProductEdit = () => {
       if (product.subcategory)
         formData.append("subcategory", product.subcategory);
       formData.append("stock", product.stock);
-      if (product.image) formData.append("image", product.image);
+      if (product.image) {
+        console.log('📤 Adding image to form data:', product.image.name);
+        formData.append("image", product.image);
+      }
 
-              await axios.put(`${API_URL}/products/${id}`, formData, {
+      // Debug: Log form data
+      for (let [key, value] of formData.entries()) {
+        console.log(`📦 FormData ${key}:`, value);
+      }
+
+      const response = await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log("✅ Product Updated Successfully!");
+      console.log("✅ Product Updated Successfully!", response.data);
       navigate("/admin/products");
     } catch (error) {
       console.error(
         "❌ Error updating product:",
         error.response?.data || error.message
       );
+      // Show user-friendly error message
+      alert(`Failed to update product: ${error.response?.data?.error || error.message}`);
     }
   };
 
@@ -125,17 +134,7 @@ const ProductEdit = () => {
 
   const getSubcategories = (category) => {
     const subcategories = {
-      Printer: [
-        "Dot-Matrix",
-        "ID Card",
-        "Inkjet",
-        "Laser",
-        "Photo",
-        "Ink Cartridge",
-        "Ribbon Cartridge",
-        "Other Printer Components",
-      ],
-      Computer: [
+      computer: [
         "All-in-One PC",
         "Monitor",
         "CPU",
@@ -151,8 +150,18 @@ const ProductEdit = () => {
         "Mouse",
         "SSD",
       ],
-      Projector: [],
-      POS: [
+      printer: [
+        "Dot-Matrix",
+        "ID Card",
+        "Inkjet",
+        "Laser",
+        "Photo",
+        "Ink Cartridge",
+        "Ribbon Cartridge",
+        "Other Printer Components",
+      ],
+      projector: [],
+      pos: [
         "Barcode Label Printer",
         "Barcode Label Sticker",
         "Barcode Scanner",
@@ -162,7 +171,7 @@ const ProductEdit = () => {
         "Paper Roll",
         "Ribbon",
       ],
-      Other: [
+      other: [
         "CCTV",
         "HDD",
         "Headphones",
@@ -174,7 +183,7 @@ const ProductEdit = () => {
         "Miscellaneous",
       ],
     };
-    return subcategories[category] || [];
+    return subcategories[category?.toLowerCase()] || [];
   };
 
   if (loading) {
@@ -216,9 +225,19 @@ const ProductEdit = () => {
         <div className="form-group">
           <label>Description</label>
           <ReactQuill
+            key={product._id || 'new-product'}
             theme="snow"
             value={product.description}
             onChange={handleDescriptionChange}
+            modules={{
+              toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            }}
           />
         </div>
 
@@ -231,11 +250,11 @@ const ProductEdit = () => {
             onChange={handleChange}
           >
             <option value="">No Change</option>
-            <option value="Computer">Computer</option>
-            <option value="Printer">Printer</option>
-            <option value="Projector">Projector</option>
-            <option value="POS">POS</option>
-            <option value="Other">Other</option>
+            <option value="computer">Computer</option>
+            <option value="printer">Printer</option>
+            <option value="projector">Projector</option>
+            <option value="pos">POS</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
@@ -290,6 +309,11 @@ const ProductEdit = () => {
               src={product.existingImage}
               alt="Product"
               className="img-thumbnail current-product-image"
+              style={{ maxWidth: '200px', maxHeight: '200px' }}
+              onError={(e) => {
+                console.log('❌ Image failed to load:', product.existingImage);
+                e.target.src = `${API_URL}/images/placeholder`;
+              }}
             />
           </div>
         )}

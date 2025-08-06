@@ -1,8 +1,6 @@
 const express = require("express");
 const { verifyAdmin } = require("../../middleware/authMiddleware");
-const multer = require("multer");
-const path = require("path");
-const fs = require("fs");
+const { upload } = require("../../services/gridfsService");
 const Product = require("../../models/Product.model"); // Ensure the model is imported
 
 const router = express.Router();
@@ -14,22 +12,7 @@ router.get("/test", (req, res) => {
   res.json({ message: "✅ Test route is working!" });
 });
 
-// ✅ Ensure "uploads" folder exists
-const uploadDir = path.join(__dirname, "../../uploads");
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
-}
-
-// ✅ Configure Multer for Image Uploads
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, "uploads/");
-  },
-  filename: function (req, file, cb) {
-    cb(null, Date.now() + path.extname(file.originalname));
-  },
-});
-const upload = multer({ storage });
+// GridFS upload configuration is handled in gridfsService
 
 const productController = require("./product.controller");
 console.log("🔍 Loaded Controller Methods:", Object.keys(productController));
@@ -70,13 +53,27 @@ router.get("/", async (req, res) => {
       return res.status(404).json({ message: "No products found" });
     }
 
-    // ✅ Format image URLs correctly
+    // ✅ Format image URLs correctly using environment-aware logic
+    const getBaseUrl = () => {
+      const isProduction = process.env.NODE_ENV === 'production' || 
+                          req.get('host')?.includes('onrender.com') ||
+                          req.get('host')?.includes('starlinkcenter.com.np') ||
+                          req.get('host')?.includes('api.starlinkcenter.com.np');
+      
+      if (isProduction) {
+        return process.env.BASE_URL || 'https://www.starlinkcenter.com.np';
+      }
+      const protocol = req.get('x-forwarded-proto') || req.protocol || 'http';
+      const host = req.get('host') || 'localhost:5000';
+      return `${protocol}://${host}`;
+    };
+    
+    const baseUrl = getBaseUrl();
     const formattedProducts = products.map((product) => ({
       ...product._doc,
-      image:
-        product.image && !product.image.startsWith("http")
-          ? `http://localhost:5000/uploads/${product.image}`
-          : product.image,
+      image: product.image
+        ? `${baseUrl}/api/v1/images/${product.image}`
+        : `${baseUrl}/api/v1/images/placeholder`,
     }));
 
     console.log("✅ Returning products:", formattedProducts.length);
@@ -105,12 +102,27 @@ router.get("/category/:category", async (req, res) => {
         .status(404)
         .json({ message: "No products found in this category" });
 
+    const getBaseUrl = () => {
+      const isProduction = process.env.NODE_ENV === 'production' || 
+                          req.get('host')?.includes('onrender.com') ||
+                          req.get('host')?.includes('starlinkcenter.com.np') ||
+                          req.get('host')?.includes('api.starlinkcenter.com.np');
+      
+      if (isProduction) {
+        return process.env.BASE_URL || 'https://www.starlinkcenter.com.np';
+      }
+      const protocol = req.get('x-forwarded-proto') || req.protocol || 'http';
+      const host = req.get('host') || 'localhost:5000';
+      return `${protocol}://${host}`;
+    };
+    
+    const baseUrl = getBaseUrl();
     res.json(
       products.map((product) => ({
         ...product._doc,
         image: product.image
-          ? `http://localhost:5000/uploads/${product.image}`
-          : null,
+          ? `${baseUrl}/api/v1/images/${product.image}`
+          : `${baseUrl}/api/v1/images/placeholder`,
       }))
     );
   } catch (error) {

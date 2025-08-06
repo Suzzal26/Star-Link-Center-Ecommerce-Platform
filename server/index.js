@@ -60,6 +60,8 @@ const userRoutes = require("./modules/users/user.route");
 
 // ✅ 🆕 Import Order Routes (this is the only change)
 const orderRoutes = require("./routes/orderRoutes");
+// ✅ Import Image Routes for GridFS
+const imageRoutes = require("./routes/imageRoutes");
 
 // ✅ Validate and Register Routes
 const routeMappings = {
@@ -70,6 +72,7 @@ const routeMappings = {
   "/api/v1/contact": contactRoutes,
   "/api/v1/users": userRoutes,
   "/api/v1/orders": orderRoutes, // 🆕 Register order routes here
+  "/api/v1/images": imageRoutes, // 🆕 Register image routes here
 };
 
 for (const [route, handler] of Object.entries(routeMappings)) {
