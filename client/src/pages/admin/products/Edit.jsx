@@ -20,25 +20,22 @@ const ProductEdit = () => {
     image: null,
     existingImage: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(
-          `${API_URL}/products/${id}`
-        );
+        const { data } = await axios.get(`${API_URL}/products/${id}`);
         setProduct((prev) => ({
           ...prev,
           name: data.name,
           price: data.price,
           description: data.description || "",
-          category: data.category || prev.category,
-          subcategory: data.subcategory || prev.subcategory,
+          category: data.category || "",
+          subcategory: data.subcategory || "",
           stock: data.stock,
-          existingImage: data.image
-            ? `${BASE_URL}/assets/${data.image}`
-            : prev.existingImage,
+          existingImage: data.image ? `${BASE_URL}/uploads/${data.image}` : "",
         }));
         setLoading(false);
       } catch (error) {
@@ -46,6 +43,7 @@ const ProductEdit = () => {
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [id]);
 
@@ -59,7 +57,9 @@ const ProductEdit = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setProduct({ ...product, image: file });
+    if (file) {
+      setProduct({ ...product, image: file });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -76,12 +76,11 @@ const ProductEdit = () => {
       formData.append("price", product.price);
       formData.append("description", product.description);
       if (product.category) formData.append("category", product.category);
-      if (product.subcategory)
-        formData.append("subcategory", product.subcategory);
+      if (product.subcategory) formData.append("subcategory", product.subcategory);
       formData.append("stock", product.stock);
       if (product.image) formData.append("image", product.image);
 
-              await axios.put(`${API_URL}/products/${id}`, formData, {
+      await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -91,16 +90,12 @@ const ProductEdit = () => {
       console.log("✅ Product Updated Successfully!");
       navigate("/admin/products");
     } catch (error) {
-      console.error(
-        "❌ Error updating product:",
-        error.response?.data || error.message
-      );
+      console.error("❌ Error updating product:", error.response?.data || error.message);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -109,69 +104,36 @@ const ProductEdit = () => {
         return;
       }
 
-              await axios.delete(`${API_URL}/products/${id}`, {
+      await axios.delete(`${API_URL}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       console.log("✅ Product Deleted Successfully!");
       navigate("/admin/products");
     } catch (error) {
-      console.error(
-        "❌ Error deleting product:",
-        error.response?.data || error.message
-      );
+      console.error("❌ Error deleting product:", error.response?.data || error.message);
     }
   };
 
   const getSubcategories = (category) => {
     const subcategories = {
       Printer: [
-        "Dot-Matrix",
-        "ID Card",
-        "Inkjet",
-        "Laser",
-        "Photo",
-        "Ink Cartridge",
-        "Ribbon Cartridge",
-        "Other Printer Components",
+        "Dot-Matrix", "ID Card", "Inkjet", "Laser", "Photo",
+        "Ink Cartridge", "Ribbon Cartridge", "Other Printer Components",
       ],
       Computer: [
-        "All-in-One PC",
-        "Monitor",
-        "CPU",
-        "Refurbished",
-        "Laptop",
-        "Cooling Fan",
-        "Graphic Card",
-        "Processor",
-        "Power Supply Unit",
-        "RAM",
-        "Motherboard",
-        "Keyboards",
-        "Mouse",
-        "SSD",
+        "All-in-One PC", "Monitor", "CPU", "Refurbished", "Laptop",
+        "Cooling Fan", "Graphic Card", "Processor", "Power Supply Unit",
+        "RAM", "Motherboard", "Keyboards", "Mouse", "SSD",
       ],
       Projector: [],
       POS: [
-        "Barcode Label Printer",
-        "Barcode Label Sticker",
-        "Barcode Scanner",
-        "Cash Drawer",
-        "POS Printer",
-        "POS Terminal",
-        "Paper Roll",
-        "Ribbon",
+        "Barcode Label Printer", "Barcode Label Sticker", "Barcode Scanner",
+        "Cash Drawer", "POS Printer", "POS Terminal", "Paper Roll", "Ribbon",
       ],
       Other: [
-        "CCTV",
-        "HDD",
-        "Headphones",
-        "ID Card",
-        "Power Strip",
-        "Speaker",
-        "Bag",
-        "Web Cam",
-        "Miscellaneous",
+        "CCTV", "HDD", "Headphones", "ID Card", "Power Strip",
+        "Speaker", "Bag", "Web Cam", "Miscellaneous",
       ],
     };
     return subcategories[category] || [];
@@ -185,6 +147,7 @@ const ProductEdit = () => {
       </div>
     );
   }
+
   return (
     <div className="container">
       <h2>Edit Product</h2>
@@ -282,13 +245,25 @@ const ProductEdit = () => {
           />
         </div>
 
-        {product.existingImage && (
+        {product.image && (
+          <div className="form-group mt-3">
+            <label>New Selected Image:</label>
+            <br />
+            <img
+              src={URL.createObjectURL(product.image)}
+              alt="New Preview"
+              className="img-thumbnail current-product-image"
+            />
+          </div>
+        )}
+
+        {!product.image && product.existingImage && (
           <div className="form-group mt-3">
             <label>Current Image:</label>
             <br />
             <img
               src={product.existingImage}
-              alt="Product"
+              alt="Existing Product"
               className="img-thumbnail current-product-image"
             />
           </div>
