@@ -20,6 +20,7 @@ const ProductEdit = () => {
     image: null,
     existingImage: "",
   });
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -28,16 +29,17 @@ const ProductEdit = () => {
         const { data } = await axios.get(
           `${API_URL}/products/${id}`
         );
-        console.log('📦 Fetched product data:', data);
         setProduct((prev) => ({
           ...prev,
           name: data.name,
           price: data.price,
           description: data.description || "",
-          category: data.category || prev.category,
-          subcategory: data.subcategory || prev.subcategory,
+          category: data.category || "",
+          subcategory: data.subcategory || "",
           stock: data.stock,
-          existingImage: data.image || null,
+          existingImage: data.image
+            ? `${BASE_URL}/assets/${data.image}`
+            : prev.existingImage,
         }));
         setLoading(false);
       } catch (error) {
@@ -45,6 +47,7 @@ const ProductEdit = () => {
         setLoading(false);
       }
     };
+
     fetchProduct();
   }, [id]);
 
@@ -58,7 +61,9 @@ const ProductEdit = () => {
 
   const handleImageChange = (e) => {
     const file = e.target.files[0];
-    setProduct({ ...product, image: file });
+    if (file) {
+      setProduct({ ...product, image: file });
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -75,20 +80,14 @@ const ProductEdit = () => {
       formData.append("price", product.price);
       formData.append("description", product.description);
       if (product.category) formData.append("category", product.category);
-      if (product.subcategory)
-        formData.append("subcategory", product.subcategory);
+      if (product.subcategory) formData.append("subcategory", product.subcategory);
       formData.append("stock", product.stock);
       if (product.image) {
         console.log('📤 Adding image to form data:', product.image.name);
         formData.append("image", product.image);
       }
 
-      // Debug: Log form data
-      for (let [key, value] of formData.entries()) {
-        console.log(`📦 FormData ${key}:`, value);
-      }
-
-      const response = await axios.put(`${API_URL}/products/${id}`, formData, {
+              await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -102,14 +101,11 @@ const ProductEdit = () => {
         "❌ Error updating product:",
         error.response?.data || error.message
       );
-      // Show user-friendly error message
-      alert(`Failed to update product: ${error.response?.data?.error || error.message}`);
     }
   };
 
   const handleDelete = async () => {
-    if (!window.confirm("Are you sure you want to delete this product?"))
-      return;
+    if (!window.confirm("Are you sure you want to delete this product?")) return;
 
     try {
       const token = localStorage.getItem("token");
@@ -118,23 +114,30 @@ const ProductEdit = () => {
         return;
       }
 
-              await axios.delete(`${API_URL}/products/${id}`, {
+      await axios.delete(`${API_URL}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
       });
 
       console.log("✅ Product Deleted Successfully!");
       navigate("/admin/products");
     } catch (error) {
-      console.error(
-        "❌ Error deleting product:",
-        error.response?.data || error.message
-      );
+      console.error("❌ Error deleting product:", error.response?.data || error.message);
     }
   };
 
   const getSubcategories = (category) => {
     const subcategories = {
-      computer: [
+      Printer: [
+        "Dot-Matrix",
+        "ID Card",
+        "Inkjet",
+        "Laser",
+        "Photo",
+        "Ink Cartridge",
+        "Ribbon Cartridge",
+        "Other Printer Components",
+      ],
+      Computer: [
         "All-in-One PC",
         "Monitor",
         "CPU",
@@ -150,18 +153,8 @@ const ProductEdit = () => {
         "Mouse",
         "SSD",
       ],
-      printer: [
-        "Dot-Matrix",
-        "ID Card",
-        "Inkjet",
-        "Laser",
-        "Photo",
-        "Ink Cartridge",
-        "Ribbon Cartridge",
-        "Other Printer Components",
-      ],
-      projector: [],
-      pos: [
+      Projector: [],
+      POS: [
         "Barcode Label Printer",
         "Barcode Label Sticker",
         "Barcode Scanner",
@@ -171,7 +164,7 @@ const ProductEdit = () => {
         "Paper Roll",
         "Ribbon",
       ],
-      other: [
+      Other: [
         "CCTV",
         "HDD",
         "Headphones",
@@ -194,6 +187,7 @@ const ProductEdit = () => {
       </div>
     );
   }
+
   return (
     <div className="container">
       <h2>Edit Product</h2>
@@ -301,13 +295,25 @@ const ProductEdit = () => {
           />
         </div>
 
-        {product.existingImage && (
+        {product.image && (
+          <div className="form-group mt-3">
+            <label>New Selected Image:</label>
+            <br />
+            <img
+              src={URL.createObjectURL(product.image)}
+              alt="New Preview"
+              className="img-thumbnail current-product-image"
+            />
+          </div>
+        )}
+
+        {!product.image && product.existingImage && (
           <div className="form-group mt-3">
             <label>Current Image:</label>
             <br />
             <img
               src={product.existingImage}
-              alt="Product"
+              alt="Existing Product"
               className="img-thumbnail current-product-image"
               style={{ maxWidth: '200px', maxHeight: '200px' }}
               onError={(e) => {
