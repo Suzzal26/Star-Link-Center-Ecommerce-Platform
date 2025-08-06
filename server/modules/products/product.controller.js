@@ -91,7 +91,7 @@ const createProduct = async (req, res) => {
       category: formattedCategory,
       subcategory: formattedSubcategory,
       stock: stock || 0,
-      image: req.file ? req.file.filename : null,
+      image: imageFilename,
     });
 
     await product.save();
@@ -117,7 +117,7 @@ const updateProduct = async (req, res) => {
     if (stock !== undefined) updateData.stock = stock;
 
     if (req.file) {
-      updateData.image = req.file.filename;
+      updateData.image = imageFilename;
     }
 
     const updatedProduct = await Product.findByIdAndUpdate(
