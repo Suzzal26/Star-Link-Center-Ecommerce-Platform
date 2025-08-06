@@ -44,7 +44,8 @@ const productSchema = new mongoose.Schema(
       }
     },
     stock: { type: Number, default: 0 },
-    image: { type: String }, // Store image URL
+    image: { type: mongoose.Schema.Types.ObjectId }, // Store GridFS file ID
+    imageUrl: { type: String }, // Store image URL for frontend
   },
   { timestamps: true }
 );

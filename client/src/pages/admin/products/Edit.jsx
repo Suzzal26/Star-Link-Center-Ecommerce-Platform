@@ -26,7 +26,9 @@ const ProductEdit = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(`${API_URL}/products/${id}`);
+        const { data } = await axios.get(
+          `${API_URL}/products/${id}`
+        );
         setProduct((prev) => ({
           ...prev,
           name: data.name,
@@ -35,7 +37,9 @@ const ProductEdit = () => {
           category: data.category || "",
           subcategory: data.subcategory || "",
           stock: data.stock,
-          existingImage: data.image ? `${BASE_URL}/uploads/${data.image}` : "",
+          existingImage: data.image
+            ? `${BASE_URL}/assets/${data.image}`
+            : prev.existingImage,
         }));
         setLoading(false);
       } catch (error) {
@@ -78,19 +82,25 @@ const ProductEdit = () => {
       if (product.category) formData.append("category", product.category);
       if (product.subcategory) formData.append("subcategory", product.subcategory);
       formData.append("stock", product.stock);
-      if (product.image) formData.append("image", product.image);
+      if (product.image) {
+        console.log('📤 Adding image to form data:', product.image.name);
+        formData.append("image", product.image);
+      }
 
-      await axios.put(`${API_URL}/products/${id}`, formData, {
+              await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
         },
       });
 
-      console.log("✅ Product Updated Successfully!");
+      console.log("✅ Product Updated Successfully!", response.data);
       navigate("/admin/products");
     } catch (error) {
-      console.error("❌ Error updating product:", error.response?.data || error.message);
+      console.error(
+        "❌ Error updating product:",
+        error.response?.data || error.message
+      );
     }
   };
 
@@ -118,25 +128,55 @@ const ProductEdit = () => {
   const getSubcategories = (category) => {
     const subcategories = {
       Printer: [
-        "Dot-Matrix", "ID Card", "Inkjet", "Laser", "Photo",
-        "Ink Cartridge", "Ribbon Cartridge", "Other Printer Components",
+        "Dot-Matrix",
+        "ID Card",
+        "Inkjet",
+        "Laser",
+        "Photo",
+        "Ink Cartridge",
+        "Ribbon Cartridge",
+        "Other Printer Components",
       ],
       Computer: [
-        "All-in-One PC", "Monitor", "CPU", "Refurbished", "Laptop",
-        "Cooling Fan", "Graphic Card", "Processor", "Power Supply Unit",
-        "RAM", "Motherboard", "Keyboards", "Mouse", "SSD",
+        "All-in-One PC",
+        "Monitor",
+        "CPU",
+        "Refurbished",
+        "Laptop",
+        "Cooling Fan",
+        "Graphic Card",
+        "Processor",
+        "Power Supply Unit",
+        "RAM",
+        "Motherboard",
+        "Keyboards",
+        "Mouse",
+        "SSD",
       ],
       Projector: [],
       POS: [
-        "Barcode Label Printer", "Barcode Label Sticker", "Barcode Scanner",
-        "Cash Drawer", "POS Printer", "POS Terminal", "Paper Roll", "Ribbon",
+        "Barcode Label Printer",
+        "Barcode Label Sticker",
+        "Barcode Scanner",
+        "Cash Drawer",
+        "POS Printer",
+        "POS Terminal",
+        "Paper Roll",
+        "Ribbon",
       ],
       Other: [
-        "CCTV", "HDD", "Headphones", "ID Card", "Power Strip",
-        "Speaker", "Bag", "Web Cam", "Miscellaneous",
+        "CCTV",
+        "HDD",
+        "Headphones",
+        "ID Card",
+        "Power Strip",
+        "Speaker",
+        "Bag",
+        "Web Cam",
+        "Miscellaneous",
       ],
     };
-    return subcategories[category] || [];
+    return subcategories[category?.toLowerCase()] || [];
   };
 
   if (loading) {
@@ -179,9 +219,19 @@ const ProductEdit = () => {
         <div className="form-group">
           <label>Description</label>
           <ReactQuill
+            key={product._id || 'new-product'}
             theme="snow"
             value={product.description}
             onChange={handleDescriptionChange}
+            modules={{
+              toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            }}
           />
         </div>
 
@@ -194,11 +244,11 @@ const ProductEdit = () => {
             onChange={handleChange}
           >
             <option value="">No Change</option>
-            <option value="Computer">Computer</option>
-            <option value="Printer">Printer</option>
-            <option value="Projector">Projector</option>
-            <option value="POS">POS</option>
-            <option value="Other">Other</option>
+            <option value="computer">Computer</option>
+            <option value="printer">Printer</option>
+            <option value="projector">Projector</option>
+            <option value="pos">POS</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
@@ -265,6 +315,11 @@ const ProductEdit = () => {
               src={product.existingImage}
               alt="Existing Product"
               className="img-thumbnail current-product-image"
+              style={{ maxWidth: '200px', maxHeight: '200px' }}
+              onError={(e) => {
+                console.log('❌ Image failed to load:', product.existingImage);
+                e.target.src = `${API_URL}/images/placeholder`;
+              }}
             />
           </div>
         )}

@@ -95,17 +95,7 @@ const ProductAdd = () => {
 
   const getSubcategories = (category) => {
     const subcategories = {
-      Printer: [
-        "Dot-Matrix",
-        "ID Card",
-        "Inkjet",
-        "Laser",
-        "Photo",
-        "Ink Cartridge",
-        "Ribbon Cartridge",
-        "Other Printer Components",
-      ],
-      Computer: [
+      computer: [
         "All-in-One PC",
         "Monitor",
         "CPU",
@@ -121,8 +111,18 @@ const ProductAdd = () => {
         "Mouse",
         "SSD",
       ],
-      Projector: [],
-      POS: [
+      printer: [
+        "Dot-Matrix",
+        "ID Card",
+        "Inkjet",
+        "Laser",
+        "Photo",
+        "Ink Cartridge",
+        "Ribbon Cartridge",
+        "Other Printer Components",
+      ],
+      projector: [],
+      pos: [
         "Barcode Label Printer",
         "Barcode Label Sticker",
         "Barcode Scanner",
@@ -132,7 +132,7 @@ const ProductAdd = () => {
         "Paper Roll",
         "Ribbon",
       ],
-      Other: [
+      other: [
         "CCTV",
         "HDD",
         "Headphones",
@@ -144,7 +144,7 @@ const ProductAdd = () => {
         "Miscellaneous",
       ],
     };
-    return subcategories[category] || [];
+    return subcategories[category.toLowerCase()] || [];
   };
 
   return (
@@ -178,9 +178,19 @@ const ProductAdd = () => {
         <div className="form-group">
           <label>Description (Supports formatting)</label>
           <ReactQuill
+            key="add-product"
             theme="snow"
             value={product.description}
             onChange={handleDescriptionChange}
+            modules={{
+              toolbar: [
+                [{ 'header': [1, 2, false] }],
+                ['bold', 'italic', 'underline', 'strike'],
+                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+                ['link', 'image'],
+                ['clean']
+              ]
+            }}
           />
         </div>
 
@@ -194,11 +204,11 @@ const ProductAdd = () => {
             required
           >
             <option value="">Select Category</option>
-            <option value="Computer">Computer</option>
-            <option value="Printer">Printer</option>
-            <option value="Projector">Projector</option>
-            <option value="POS">POS</option>
-            <option value="Other">Other</option>
+            <option value="computer">Computer</option>
+            <option value="printer">Printer</option>
+            <option value="projector">Projector</option>
+            <option value="pos">POS</option>
+            <option value="other">Other</option>
           </select>
         </div>
 
