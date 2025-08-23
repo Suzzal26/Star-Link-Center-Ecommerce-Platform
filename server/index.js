@@ -8,7 +8,8 @@ const fs = require("fs");
 
 // ✅ Load environment variables
 dotenv.config();
-const { MONGO_URI, JWT_SECRET, PORT = 5000 } = process.env;
+const { MONGO_URI, JWT_SECRET } = process.env;
+const PORT = process.env.PORT || 5000;
 
 // ✅ Validate required environment variables
 if (!MONGO_URI || !JWT_SECRET) {
@@ -33,16 +34,21 @@ app.use(
   })
 );
 
-app.use(express.json());
+app.use(express.json({ limit: "10mb" }));
 app.use(cookieParser());
 
-// ✅ Add request logging middleware
+// ✅ Request Logger
 app.use((req, res, next) => {
   console.log(`🌐 ${req.method} ${req.url} - ${new Date().toISOString()}`);
   next();
 });
 
-// ✅ Ensure `uploads/` folder exists
+// ✅ Health Check Endpoint for Render
+app.get("/api/v1/auth/test", (req, res) => {
+  res.status(200).json({ message: "✅ Auth API working" });
+});
+
+// ✅ Ensure uploads folder
 const uploadDir = path.join(__dirname, "uploads");
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
@@ -57,13 +63,10 @@ const productRoutes = require("./modules/products/productRoutes");
 const searchRoutes = require("./modules/search/searchRoutes");
 const contactRoutes = require("./modules/contact/contactRoutes");
 const userRoutes = require("./modules/users/user.route");
-
-// ✅ 🆕 Import Order Routes (this is the only change)
 const orderRoutes = require("./routes/orderRoutes");
-// ✅ Import Image Routes for GridFS
 const imageRoutes = require("./routes/imageRoutes");
 
-// ✅ Validate and Register Routes
+// ✅ Register Routes
 const routeMappings = {
   "/api/v1/auth": authRoutes,
   "/api/v1/admin": adminRoutes,
@@ -71,8 +74,8 @@ const routeMappings = {
   "/api/v1/search": searchRoutes,
   "/api/v1/contact": contactRoutes,
   "/api/v1/users": userRoutes,
-  "/api/v1/orders": orderRoutes, // 🆕 Register order routes here
-  "/api/v1/images": imageRoutes, // 🆕 Register image routes here
+  "/api/v1/orders": orderRoutes,
+  "/api/v1/images": imageRoutes,
 };
 
 for (const [route, handler] of Object.entries(routeMappings)) {
@@ -88,44 +91,32 @@ console.log("🛠 Registered API Routes:");
 app._router.stack.forEach((layer) => {
   if (layer.route) {
     console.log(
-      `➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${
-        layer.route.path
-      }`
+      `➡️ ${Object.keys(layer.route.methods).join(", ").toUpperCase()} ${layer.route.path}`
     );
   }
 });
 
-// ✅ MongoDB Connection
-console.log("🔍 [DB] Attempting to connect to MongoDB...");
-console.log(
-  "🔍 [DB] Connection string:",
-  MONGO_URI.replace(/\/\/.*@/, "//***:***@")
-); // Hide credentials
-
+// ✅ Connect to MongoDB
+console.log("🔍 [DB] Connecting to MongoDB...");
 mongoose
   .connect(MONGO_URI)
-  .then(() => {
-    console.log("✅ MongoDB connected successfully");
-    console.log("🔍 [DB] Database name:", mongoose.connection.db.databaseName);
-    console.log(
-      "🔍 [DB] Collections:",
-      mongoose.connection.db
-        .listCollections()
-        .toArray()
-        .then((cols) => cols.map((c) => c.name))
-    );
+  .then(async () => {
+    console.log("✅ MongoDB connected");
+    console.log("🔍 DB Name:", mongoose.connection.db.databaseName);
+    const collections = await mongoose.connection.db.listCollections().toArray();
+    console.log("📚 Collections:", collections.map(c => c.name));
   })
   .catch((err) => {
     console.error("❌ MongoDB connection failed:", err.message);
     setTimeout(() => process.exit(1), 5000);
   });
 
-// ✅ Handle Undefined Routes
+// ✅ Handle 404
 app.use("*", (req, res) =>
   res.status(404).json({ error: "API Route Not Found" })
 );
 
 // ✅ Start the Server
 app.listen(PORT, () =>
-  console.log(`🚀 Server running on http://localhost:${PORT}`)
+  console.log(`🚀 Server running on port ${PORT}`)
 );

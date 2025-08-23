@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { API_URL, BASE_URL } from "../../../constants";
+import { API_URL } from "../../../constants";
 import "./Edit.css";
 
 const ProductEdit = () => {
@@ -26,9 +26,7 @@ const ProductEdit = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(
-          `${API_URL}/products/${id}`
-        );
+        const { data } = await axios.get(`${API_URL}/products/${id}`);
         setProduct((prev) => ({
           ...prev,
           name: data.name,
@@ -36,14 +34,12 @@ const ProductEdit = () => {
           description: data.description || "",
           category: data.category || "",
           subcategory: data.subcategory || "",
-          stock: data.stock,
-          existingImage: data.image
-            ? `${BASE_URL}/assets/${data.image}`
-            : prev.existingImage,
+          stock: data.stock || 0,
+          existingImage: data.image || "",
         }));
-        setLoading(false);
       } catch (error) {
         console.error("❌ Error fetching product:", error);
+      } finally {
         setLoading(false);
       }
     };
@@ -70,10 +66,7 @@ const ProductEdit = () => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("❌ No token found. Please log in as admin.");
-        return;
-      }
+      if (!token) return alert("Unauthorized. Please login as admin.");
 
       const formData = new FormData();
       formData.append("name", product.name);
@@ -82,12 +75,9 @@ const ProductEdit = () => {
       if (product.category) formData.append("category", product.category);
       if (product.subcategory) formData.append("subcategory", product.subcategory);
       formData.append("stock", product.stock);
-      if (product.image) {
-        console.log('📤 Adding image to form data:', product.image.name);
-        formData.append("image", product.image);
-      }
+      if (product.image) formData.append("image", product.image);
 
-              await axios.put(`${API_URL}/products/${id}`, formData, {
+      const response = await axios.put(`${API_URL}/products/${id}`, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
           Authorization: `Bearer ${token}`,
@@ -97,10 +87,7 @@ const ProductEdit = () => {
       console.log("✅ Product Updated Successfully!", response.data);
       navigate("/admin/products");
     } catch (error) {
-      console.error(
-        "❌ Error updating product:",
-        error.response?.data || error.message
-      );
+      console.error("❌ Error updating product:", error.response?.data || error.message);
     }
   };
 
@@ -109,10 +96,7 @@ const ProductEdit = () => {
 
     try {
       const token = localStorage.getItem("token");
-      if (!token) {
-        console.error("❌ No token found. Please log in as admin.");
-        return;
-      }
+      if (!token) return alert("Unauthorized. Please login as admin.");
 
       await axios.delete(`${API_URL}/products/${id}`, {
         headers: { Authorization: `Bearer ${token}` },
@@ -127,66 +111,16 @@ const ProductEdit = () => {
 
   const getSubcategories = (category) => {
     const subcategories = {
-      Printer: [
-        "Dot-Matrix",
-        "ID Card",
-        "Inkjet",
-        "Laser",
-        "Photo",
-        "Ink Cartridge",
-        "Ribbon Cartridge",
-        "Other Printer Components",
-      ],
-      Computer: [
-        "All-in-One PC",
-        "Monitor",
-        "CPU",
-        "Refurbished",
-        "Laptop",
-        "Cooling Fan",
-        "Graphic Card",
-        "Processor",
-        "Power Supply Unit",
-        "RAM",
-        "Motherboard",
-        "Keyboards",
-        "Mouse",
-        "SSD",
-      ],
-      Projector: [],
-      POS: [
-        "Barcode Label Printer",
-        "Barcode Label Sticker",
-        "Barcode Scanner",
-        "Cash Drawer",
-        "POS Printer",
-        "POS Terminal",
-        "Paper Roll",
-        "Ribbon",
-      ],
-      Other: [
-        "CCTV",
-        "HDD",
-        "Headphones",
-        "ID Card",
-        "Power Strip",
-        "Speaker",
-        "Bag",
-        "Web Cam",
-        "Miscellaneous",
-      ],
+      computer: ["All-in-One PC", "Monitor", "CPU", "Refurbished", "Laptop", "Cooling Fan", "Graphic Card", "Processor", "Power Supply Unit", "RAM", "Motherboard", "Keyboards", "Mouse", "SSD"],
+      printer: ["Dot-Matrix", "ID Card", "Inkjet", "Laser", "Photo", "Ink Cartridge", "Ribbon Cartridge", "Other Printer Components"],
+      projector: [],
+      pos: ["Barcode Label Printer", "Barcode Label Sticker", "Barcode Scanner", "Cash Drawer", "POS Printer", "POS Terminal", "Paper Roll", "Ribbon"],
+      other: ["CCTV", "HDD", "Headphones", "ID Card", "Power Strip", "Speaker", "Bag", "Web Cam", "Miscellaneous"],
     };
     return subcategories[category?.toLowerCase()] || [];
   };
 
-  if (loading) {
-    return (
-      <div className="container">
-        <h2>Edit Product</h2>
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  if (loading) return <div className="container"><h2>Edit Product</h2><p>Loading...</p></div>;
 
   return (
     <div className="container">
@@ -194,55 +128,22 @@ const ProductEdit = () => {
       <form onSubmit={handleSubmit}>
         <div className="form-group">
           <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            className="form-control"
-            value={product.name}
-            onChange={handleChange}
-            required
-          />
+          <input type="text" name="name" className="form-control" value={product.name} onChange={handleChange} required />
         </div>
 
         <div className="form-group">
           <label>Price (Rs.)</label>
-          <input
-            type="number"
-            name="price"
-            className="form-control"
-            value={product.price}
-            onChange={handleChange}
-            required
-          />
+          <input type="number" name="price" className="form-control" value={product.price} onChange={handleChange} required />
         </div>
 
         <div className="form-group">
           <label>Description</label>
-          <ReactQuill
-            key={product._id || 'new-product'}
-            theme="snow"
-            value={product.description}
-            onChange={handleDescriptionChange}
-            modules={{
-              toolbar: [
-                [{ 'header': [1, 2, false] }],
-                ['bold', 'italic', 'underline', 'strike'],
-                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                ['link', 'image'],
-                ['clean']
-              ]
-            }}
-          />
+          <ReactQuill theme="snow" value={product.description} onChange={handleDescriptionChange} modules={{ toolbar: [[{ header: [1, 2, false] }], ["bold", "italic", "underline", "strike"], [{ list: "ordered" }, { list: "bullet" }], ["link", "image"], ["clean"]] }} />
         </div>
 
         <div className="form-group">
           <label>Category (Optional)</label>
-          <select
-            name="category"
-            className="form-control"
-            value={product.category}
-            onChange={handleChange}
-          >
+          <select name="category" className="form-control" value={product.category} onChange={handleChange}>
             <option value="">No Change</option>
             <option value="computer">Computer</option>
             <option value="printer">Printer</option>
@@ -255,17 +156,10 @@ const ProductEdit = () => {
         {product.category && getSubcategories(product.category).length > 0 && (
           <div className="form-group">
             <label>Subcategory</label>
-            <select
-              name="subcategory"
-              className="form-control"
-              value={product.subcategory}
-              onChange={handleChange}
-            >
+            <select name="subcategory" className="form-control" value={product.subcategory} onChange={handleChange}>
               <option value="">No Change</option>
               {getSubcategories(product.category).map((sub) => (
-                <option key={sub} value={sub}>
-                  {sub}
-                </option>
+                <option key={sub} value={sub}>{sub}</option>
               ))}
             </select>
           </div>
@@ -273,37 +167,19 @@ const ProductEdit = () => {
 
         <div className="form-group">
           <label>Stock</label>
-          <input
-            type="number"
-            name="stock"
-            className="form-control"
-            value={product.stock}
-            onChange={handleChange}
-            min="0"
-            required
-          />
+          <input type="number" name="stock" className="form-control" value={product.stock} onChange={handleChange} min="0" required />
         </div>
 
         <div className="form-group">
           <label>Product Image</label>
-          <input
-            type="file"
-            name="image"
-            className="form-control"
-            accept="image/png, image/jpeg, image/jpg"
-            onChange={handleImageChange}
-          />
+          <input type="file" name="image" className="form-control" accept="image/*" onChange={handleImageChange} />
         </div>
 
         {product.image && (
           <div className="form-group mt-3">
             <label>New Selected Image:</label>
             <br />
-            <img
-              src={URL.createObjectURL(product.image)}
-              alt="New Preview"
-              className="img-thumbnail current-product-image"
-            />
+            <img src={URL.createObjectURL(product.image)} alt="New Preview" className="img-thumbnail current-product-image" />
           </div>
         )}
 
@@ -311,27 +187,14 @@ const ProductEdit = () => {
           <div className="form-group mt-3">
             <label>Current Image:</label>
             <br />
-            <img
-              src={product.existingImage}
-              alt="Existing Product"
-              className="img-thumbnail current-product-image"
-              style={{ maxWidth: '200px', maxHeight: '200px' }}
-              onError={(e) => {
-                console.log('❌ Image failed to load:', product.existingImage);
-                e.target.src = `${API_URL}/images/placeholder`;
-              }}
-            />
+            <img src={product.existingImage} alt="Existing Product" className="img-thumbnail current-product-image" style={{ maxWidth: '200px', maxHeight: '200px' }} />
           </div>
         )}
 
         <br />
-        <button type="submit" className="btn btn-primary">
-          Update Product
-        </button>
+        <button type="submit" className="btn btn-primary">Update Product</button>
         <span className="button-spacer"></span>
-        <button type="button" className="btn btn-danger" onClick={handleDelete}>
-          Delete Product
-        </button>
+        <button type="button" className="btn btn-danger" onClick={handleDelete}>Delete Product</button>
       </form>
     </div>
   );

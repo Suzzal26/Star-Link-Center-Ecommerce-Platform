@@ -89,3 +89,25 @@
   border: 1px solid #ccc;
   z-index: 1;
 }
+
+.simple-alert {
+  position: fixed;
+  top: 80px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #28a745;
+  color: white;
+  padding: 12px 24px;
+  border-radius: 8px;
+  font-weight: bold;
+  z-index: 9999;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  animation: fadeOut 3s forwards;
+}
+
+@keyframes fadeOut {
+  0%   { opacity: 1; }
+  70%  { opacity: 1; }
+  100% { opacity: 0; }
+}
+

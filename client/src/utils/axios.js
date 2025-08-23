@@ -3,7 +3,7 @@ import { BASE_URL } from "../constants";
 
 const instance = axios.create({
   baseURL: BASE_URL,
-  timeout: 5000,
+  timeout: 50000,
   withCredentials: true, // ✅ Allows cookies, but let's also add token manually
   headers: {
     "Content-Type": "application/json",

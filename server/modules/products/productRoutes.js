@@ -1,19 +1,13 @@
 const express = require("express");
 const { verifyAdmin } = require("../../middleware/authMiddleware");
-const { upload } = require("../../services/gridfsService");
-const Product = require("../../models/Product.model"); // Ensure the model is imported
+const { upload } = require("../../utils/cloudinary"); // ✅ Replaces GridFS upload
+const Product = require("../../models/Product.model");
 
 const router = express.Router();
 
 console.log("✅ productRoutes.js is being executed!");
 
-// ✅ Test Route (Keep for Debugging)
-router.get("/test", (req, res) => {
-  res.json({ message: "✅ Test route is working!" });
-});
-
-// GridFS upload configuration is handled in gridfsService
-
+// ✅ Controller methods
 const productController = require("./product.controller");
 console.log("🔍 Loaded Controller Methods:", Object.keys(productController));
 
@@ -22,7 +16,12 @@ const createProduct = productController.createProduct;
 const updateProduct = productController.updateProduct;
 const deleteProduct = productController.deleteProduct;
 
-// ✅ GET All Products (Supports Category & Subcategory Filters)
+// ✅ Test Route
+router.get("/test", (req, res) => {
+  res.json({ message: "✅ Test route is working!" });
+});
+
+// ✅ GET All Products
 router.get("/", async (req, res) => {
   console.log("🔍 GET /api/v1/products - Request received!");
   console.log("📝 Request URL:", req.url);
@@ -53,27 +52,28 @@ router.get("/", async (req, res) => {
       return res.status(404).json({ message: "No products found" });
     }
 
-    // ✅ Format image URLs correctly using environment-aware logic
     const getBaseUrl = () => {
       const isProduction = process.env.NODE_ENV === 'production' || 
-                          req.get('host')?.includes('onrender.com') ||
-                          req.get('host')?.includes('starlinkcenter.com.np') ||
-                          req.get('host')?.includes('api.starlinkcenter.com.np');
-      
+        req.get('host')?.includes('onrender.com') ||
+        req.get('host')?.includes('starlinkcenter.com.np') ||
+        req.get('host')?.includes('api.starlinkcenter.com.np');
+
       if (isProduction) {
         return process.env.BASE_URL || 'https://www.starlinkcenter.com.np';
       }
+
       const protocol = req.get('x-forwarded-proto') || req.protocol || 'http';
       const host = req.get('host') || 'localhost:5000';
       return `${protocol}://${host}`;
     };
-    
+
     const baseUrl = getBaseUrl();
+
     const formattedProducts = products.map((product) => ({
       ...product._doc,
-      image: product.image
-        ? `${baseUrl}/api/v1/images/${product.image}`
-        : `${baseUrl}/api/v1/images/placeholder`,
+      image: product.image?.startsWith("http")
+        ? product.image // Cloudinary URL
+        : `${baseUrl}/api/v1/images/${product.image || 'placeholder'}`,
     }));
 
     console.log("✅ Returning products:", formattedProducts.length);
@@ -84,7 +84,7 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ GET Products by Category (Supports Subcategories)
+// ✅ GET Products by Category
 router.get("/category/:category", async (req, res) => {
   try {
     const category = req.params.category.trim().toLowerCase();
@@ -104,27 +104,29 @@ router.get("/category/:category", async (req, res) => {
 
     const getBaseUrl = () => {
       const isProduction = process.env.NODE_ENV === 'production' || 
-                          req.get('host')?.includes('onrender.com') ||
-                          req.get('host')?.includes('starlinkcenter.com.np') ||
-                          req.get('host')?.includes('api.starlinkcenter.com.np');
-      
+        req.get('host')?.includes('onrender.com') ||
+        req.get('host')?.includes('starlinkcenter.com.np') ||
+        req.get('host')?.includes('api.starlinkcenter.com.np');
+
       if (isProduction) {
         return process.env.BASE_URL || 'https://www.starlinkcenter.com.np';
       }
+
       const protocol = req.get('x-forwarded-proto') || req.protocol || 'http';
       const host = req.get('host') || 'localhost:5000';
       return `${protocol}://${host}`;
     };
-    
+
     const baseUrl = getBaseUrl();
-    res.json(
-      products.map((product) => ({
-        ...product._doc,
-        image: product.image
-          ? `${baseUrl}/api/v1/images/${product.image}`
-          : `${baseUrl}/api/v1/images/placeholder`,
-      }))
-    );
+
+    const formattedProducts = products.map((product) => ({
+      ...product._doc,
+      image: product.image?.startsWith("http")
+        ? product.image
+        : `${baseUrl}/api/v1/images/${product.image || 'placeholder'}`,
+    }));
+
+    res.json(formattedProducts);
   } catch (error) {
     console.error("Error fetching products by category:", error);
     res.status(500).json({ message: "Server error", error });
@@ -134,18 +136,12 @@ router.get("/category/:category", async (req, res) => {
 // ✅ GET Single Product by ID
 router.get("/:id", getProductById);
 
-// ✅ Protected Routes (Admin Only)
+// ✅ Protected CRUD Routes (Admin Only)
 router.post("/", verifyAdmin, upload.single("image"), createProduct);
 router.put("/:id", verifyAdmin, upload.single("image"), updateProduct);
 router.delete("/:id", verifyAdmin, deleteProduct);
 
-console.log("✅ Product routes are being registered");
-
-// ✅ Log the registered routes
-console.log(
-  "📂 Registered Product Routes:",
-  router.stack.map((r) => r.route?.path).filter(Boolean)
-);
+// ✅ Log all routes
 console.log("📂 Final Registered Routes in Express:");
 router.stack.forEach((layer) => {
   if (layer.route) {

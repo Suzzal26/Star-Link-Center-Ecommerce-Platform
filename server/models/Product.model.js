@@ -11,17 +11,18 @@ const subcategories = {
     "Dot-Matrix", "ID Card", "Inkjet", "Laser", "Photo", "Ink Cartridge", 
     "Ribbon Cartridge", "Other Printer Components"
   ],
-  projector: [], // No subcategories for now
+  projector: [],
   pos: [
     "Barcode Label Printer", "Barcode Label Sticker", "Barcode Scanner", 
     "Cash Drawer", "POS Printer", "POS Terminal", "Paper Roll", "Ribbon"
   ],
   other: [
-    "CCTV", "HDD", "Headphones", "ID Card", "Power Strip", "Speaker", "Bag", "Web Cam", "Miscellaneous"
+    "CCTV", "HDD", "Headphones", "ID Card", "Power Strip", "Speaker", 
+    "Bag", "Web Cam", "Miscellaneous"
   ]
 };
 
-// ✅ Product Schema with category & subcategory validation
+// ✅ Product Schema for Cloudinary setup
 const productSchema = new mongoose.Schema(
   {
     name: { type: String, required: true },
@@ -30,25 +31,26 @@ const productSchema = new mongoose.Schema(
     category: { 
       type: String, 
       required: true, 
-      enum: Object.keys(subcategories), // ✅ Ensures category matches allowed values
-      set: value => value.trim().toLowerCase()  // ✅ Store lowercase values only
+      enum: Object.keys(subcategories),
+      set: value => value.trim().toLowerCase()
     },
     subcategory: { 
       type: String,
       validate: {
         validator: function(value) {
-          if (!value) return true; // ✅ Allow empty subcategory
+          if (!value) return true;
           return subcategories[this.category]?.includes(value);
         },
         message: props => `Invalid subcategory "${props.value}" for category "${props.instance.category}"`
       }
     },
     stock: { type: Number, default: 0 },
-    image: { type: mongoose.Schema.Types.ObjectId }, // Store GridFS file ID
-    imageUrl: { type: String }, // Store image URL for frontend
+
+    // ✅ Replaces GridFS logic
+    image: { type: String }, // This will store Cloudinary URL directly
   },
   { timestamps: true }
 );
 
-// ✅ Export Model
+// ✅ Export model
 module.exports = mongoose.model("Product", productSchema);

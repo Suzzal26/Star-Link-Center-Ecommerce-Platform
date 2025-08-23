@@ -11,6 +11,7 @@ const ProductDetail = () => {
   const [product, setProduct] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  const [showMessage, setShowMessage] = useState(false); // ✅ Alert state
 
   const imageRef = useRef(null);
   const zoomLensRef = useRef(null);
@@ -19,9 +20,7 @@ const ProductDetail = () => {
   useEffect(() => {
     const fetchProduct = async () => {
       try {
-        const { data } = await axios.get(
-          `${API_URL}/products/${id}`
-        );
+        const { data } = await axios.get(`${API_URL}/products/${id}`);
         data.image = data.image?.startsWith("http")
           ? data.image
           : `${BASE_URL}/assets/${data.image}`;
@@ -32,6 +31,7 @@ const ProductDetail = () => {
         setLoading(false);
       }
     };
+
     if (id) fetchProduct();
     else {
       setError("Invalid product ID.");
@@ -96,6 +96,12 @@ const ProductDetail = () => {
     };
   }, [product]);
 
+  const handleAddToCart = () => {
+    addToCart(product);
+    setShowMessage(true);
+    setTimeout(() => setShowMessage(false), 3000); // ✅ Hide after 3s
+  };
+
   if (loading) return <h2 className="loading">Loading...</h2>;
   if (error) return <h2 className="error-message">{error}</h2>;
   if (!product)
@@ -122,9 +128,13 @@ const ProductDetail = () => {
           <h2>{product.name}</h2>
           <h4 className="product-price">Rs. {product.price}</h4>
 
-          <button className="add-to-cart" onClick={() => addToCart(product)}>
+          <button className="add-to-cart" onClick={handleAddToCart}>
             Add to Cart
           </button>
+
+          {showMessage && (
+            <div className="simple-alert">✅ Product added to cart!</div>
+          )}
 
           <div
             className="product-description"
