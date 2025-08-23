@@ -26,4 +26,4 @@ server/public/images/users/*
 server/public/images/blogs/*
 server/play
 
-
+.env
